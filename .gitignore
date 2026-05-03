@@ -1,0 +1,20 @@
+# Go workspace
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Binaries
+*.o
+*.a
+*.obj
+
+# Output of the go coverage tool
+*.out
+
+# Environment variables (Crucial for security!)
+.env
+
+# Mac directory files
+.DS_Store
