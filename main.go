@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-
+    "os"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/datatypes"
@@ -24,10 +24,15 @@ var DB *gorm.DB
 
 func main() {
 	// 2. Connect to PostgreSQL
-	// UPDATE "user" to match what worked in your DB App!
-	dsn := "host=localhost user=dinkyunadkat dbname=vaultex port=5432 sslmode=disable"
-	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dsn := os.Getenv("DATABASE_URL")
+
+	// If it's empty, we must be running locally, so use the local Mac database!
+	if dsn == "" {
+		dsn = "host=localhost user=dinkyunadkat dbname=vaultex port=5432 sslmode=disable"
+	}
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	
 	if err != nil {
 		log.Fatal("Failed to connect to database. Check your DSN string:", err)
 	}
@@ -35,7 +40,7 @@ func main() {
 	log.Println("Database connection successful!")
 
 	// 3. Auto-Migrate: This tells GORM to look at the Product struct and build the SQL table automatically!
-	DB.AutoMigrate(&Product{})
+	db.AutoMigrate(&Product{})
 
 	// 4. Set up the Router
 	r := gin.Default()
